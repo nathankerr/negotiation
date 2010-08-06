@@ -5,7 +5,10 @@ import (
 	"log"
 	"net"
 	"os"
+	"crypto/rand"
 	"rpc"
+	"crypto/tls"
+	"time"
 )
 
 type Args struct {
@@ -50,27 +53,78 @@ func (pl *PacketListener) Close() os.Error {
 	return pl.c.Close()
 }
 
+func serveTCP(proto string, addr string) os.Error {
+	if proto != "tcp" {
+		return os.EINVAL
+	}
+	l, err := net.Listen(proto, addr)
+	if err != nil {
+		log.Exit(err)
+	}
+	defer l.Close()
+		for {
+		conn, _ := l.Accept()
+		jsonrpc.ServeConn(conn)
+	}
+
+	return nil
+}
+
+func serveUDP(proto string, addr string) os.Error {
+	if proto != "udp" {
+		return os.EINVAL
+	}
+
+	pl := new(PacketListener)
+	c, err := net.ListenPacket(proto, addr)
+	if err != nil {
+		log.Exit(err)
+	}
+	defer pl.Close()
+	pl.c = c
+
+	for {
+		jsonrpc.ServeConn(pl)
+	}
+
+	return nil
+}
+
+func serveTLS(proto string, addr string) os.Error {
+	if proto != "tls" {
+		return os.EINVAL
+	}
+	config := &tls.Config {
+		Rand: rand.Reader,
+		Time: time.Nanoseconds,
+	}
+	config.Certificates = make([]tls.Certificate, 1)
+	var err os.Error
+	config.Certificates[0], err = tls.LoadX509KeyPair("server.crt", "server.key")
+	if err != nil {
+		log.Exit(err)
+	}
+
+	l, err := tls.Listen("tcp", ":1235", config)
+	if err != nil {
+		log.Exit(err)
+	}
+	for {
+		conn, _ := l.Accept()
+		jsonrpc.ServeConn(conn)
+	}
+
+	return nil
+}
+
 func serve(proto string, addr string) {
 	switch proto {
 	case "tcp":
-		l, err := net.Listen(proto, addr)
-		if err != nil {
-			log.Exit(err)
-		}
-		for {
-			conn, _ := l.Accept()
-			jsonrpc.ServeConn(conn)
-		}
+		serveTCP(proto, addr)
 	case "udp":
-		pl := new(PacketListener)
-		c, err := net.ListenPacket(proto, addr)
-		if err != nil {
-			log.Exit(err)
-		}
-		pl.c = c
-		for {
-			jsonrpc.ServeConn(pl)
-		}
+		serveUDP(proto, addr)
+	case "tls":
+		serveTLS(proto, addr)
 	default:
 		log.Exit("Protocol", proto, "not supported")
 	}
@@ -84,5 +138,6 @@ func main() {
 
 	addr := ":1234"
 	go serve("udp", addr)
-	serve("tcp", addr)
+	go serve("tcp", addr)
+	serve("tls", addr)
 }

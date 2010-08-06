@@ -1,0 +1,76 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 1 (0x1)
+        Signature Algorithm: sha1WithRSAEncryption
+        Issuer: C=DE, ST=RP, L=Kaiserslautern, O=TU Kaiserslautern ICSY, CN=TU Kaiserslautern ICSY CA/emailAddress=kerr@informatik.uni-kl.de
+        Validity
+            Not Before: Aug  6 15:56:40 2010 GMT
+            Not After : Aug  3 15:56:40 2020 GMT
+        Subject: C=DE, ST=RP, L=Kaiserslautern, O=TU Kaiserslautern ICSY, CN=server/emailAddress=kerr@informatik.uni-kl.de
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+            RSA Public Key: (1024 bit)
+                Modulus (1024 bit):
+                    00:be:ca:14:e0:1c:91:18:b5:5e:37:6a:6a:cc:37:
+                    bb:f9:ff:6f:a4:45:b1:30:69:20:02:ed:66:6e:6d:
+                    b2:83:cc:8f:69:af:ab:10:74:03:31:93:14:60:c7:
+                    13:64:c9:cb:c2:be:e2:8e:3f:8b:89:d4:e7:1a:fa:
+                    12:88:3c:d8:c2:e5:90:77:f5:c5:1d:c4:0b:53:6a:
+                    83:19:67:c0:24:4e:51:a0:fe:15:33:24:b9:1a:77:
+                    0b:62:36:9e:95:6b:36:09:2e:55:bf:0c:1c:a4:db:
+                    76:96:e5:01:3f:07:49:43:c1:2b:ab:05:89:9b:01:
+                    3c:4c:60:2b:cf:b2:2d:6a:ab
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Cert Type: 
+                SSL Server
+            Netscape Comment: 
+                Easy-RSA Generated Server Certificate
+            X509v3 Subject Key Identifier: 
+                ED:B9:0F:6F:A5:A5:43:D4:FE:F0:CA:3C:42:79:A7:80:E8:9A:01:6F
+            X509v3 Authority Key Identifier: 
+                keyid:83:EE:26:5E:65:33:E6:18:B8:12:C9:E6:4E:2D:AA:DF:7A:1F:EE:44
+                DirName:/C=DE/ST=RP/L=Kaiserslautern/O=TU Kaiserslautern ICSY/CN=TU Kaiserslautern ICSY CA/emailAddress=kerr@informatik.uni-kl.de
+                serial:AA:C3:7E:73:4D:56:23:1F
+
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Key Usage: 
+                Digital Signature, Key Encipherment
+    Signature Algorithm: sha1WithRSAEncryption
+        46:27:ca:03:de:7d:35:cb:62:1b:86:5a:c6:19:06:59:6a:b7:
+        5d:aa:b1:ad:d3:92:41:d7:99:e0:66:69:34:1c:b4:f9:b6:89:
+        94:66:3c:6a:d0:b2:dd:de:80:11:c8:b2:97:9f:65:2d:fd:f4:
+        ea:52:9c:a0:40:b9:7f:80:17:52:e9:3d:37:0f:87:a0:46:9e:
+        72:d9:7b:0d:6c:6d:8c:32:f9:38:90:0f:98:14:b7:cf:1d:51:
+        39:c6:f7:ff:56:3f:15:f2:fe:01:85:38:96:3e:08:ff:7f:6c:
+        cd:23:01:fb:32:a6:84:20:ec:ce:dd:61:3b:02:a1:01:5f:2b:
+        9b:ec
+-----BEGIN CERTIFICATE-----
+MIIEHjCCA4egAwIBAgIBATANBgkqhkiG9w0BAQUFADCBojELMAkGA1UEBhMCREUx
+CzAJBgNVBAgTAlJQMRcwFQYDVQQHEw5LYWlzZXJzbGF1dGVybjEfMB0GA1UEChMW
+VFUgS2Fpc2Vyc2xhdXRlcm4gSUNTWTEiMCAGA1UEAxMZVFUgS2Fpc2Vyc2xhdXRl
+cm4gSUNTWSBDQTEoMCYGCSqGSIb3DQEJARYZa2VyckBpbmZvcm1hdGlrLnVuaS1r
+bC5kZTAeFw0xMDA4MDYxNTU2NDBaFw0yMDA4MDMxNTU2NDBaMIGPMQswCQYDVQQG
+EwJERTELMAkGA1UECBMCUlAxFzAVBgNVBAcTDkthaXNlcnNsYXV0ZXJuMR8wHQYD
+VQQKExZUVSBLYWlzZXJzbGF1dGVybiBJQ1NZMQ8wDQYDVQQDEwZzZXJ2ZXIxKDAm
+BgkqhkiG9w0BCQEWGWtlcnJAaW5mb3JtYXRpay51bmkta2wuZGUwgZ8wDQYJKoZI
+hvcNAQEBBQADgY0AMIGJAoGBAL7KFOAckRi1Xjdqasw3u/n/b6RFsTBpIALtZm5t
+soPMj2mvqxB0AzGTFGDHE2TJy8K+4o4/i4nU5xr6Eog82MLlkHf1xR3EC1Nqgxln
+wCROUaD+FTMkuRp3C2I2npVrNgkuVb8MHKTbdpblAT8HSUPBK6sFiZsBPExgK8+y
+LWqrAgMBAAGjggFzMIIBbzAJBgNVHRMEAjAAMBEGCWCGSAGG+EIBAQQEAwIGQDA0
+BglghkgBhvhCAQ0EJxYlRWFzeS1SU0EgR2VuZXJhdGVkIFNlcnZlciBDZXJ0aWZp
+Y2F0ZTAdBgNVHQ4EFgQU7bkPb6WlQ9T+8Mo8QnmngOiaAW8wgdcGA1UdIwSBzzCB
+zIAUg+4mXmUz5hi4EsnmTi2q33of7kShgaikgaUwgaIxCzAJBgNVBAYTAkRFMQsw
+CQYDVQQIEwJSUDEXMBUGA1UEBxMOS2Fpc2Vyc2xhdXRlcm4xHzAdBgNVBAoTFlRV
+IEthaXNlcnNsYXV0ZXJuIElDU1kxIjAgBgNVBAMTGVRVIEthaXNlcnNsYXV0ZXJu
+IElDU1kgQ0ExKDAmBgkqhkiG9w0BCQEWGWtlcnJAaW5mb3JtYXRpay51bmkta2wu
+ZGWCCQCqw35zTVYjHzATBgNVHSUEDDAKBggrBgEFBQcDATALBgNVHQ8EBAMCBaAw
+DQYJKoZIhvcNAQEFBQADgYEARifKA959NctiG4ZaxhkGWWq3XaqxrdOSQdeZ4GZp
+NBy0+baJlGY8atCy3d6AEciyl59lLf306lKcoEC5f4AXUuk9Nw+HoEaectl7DWxt
+jDL5OJAPmBS3zx1ROcb3/1Y/FfL+AYU4lj4I/39szSMB+zKmhCDszt1hOwKhAV8r
+m+w=
+-----END CERTIFICATE-----

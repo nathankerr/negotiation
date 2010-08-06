@@ -3,9 +3,13 @@ package main
 import (
 	"fmt"
 	"log"
+	"net"
 	"os"
+	"crypto/rand"
 	"rpc"
 	"rpc/jsonrpc"
+	"time"
+	"crypto/tls"
 )
 
 type Args struct {
@@ -21,6 +25,18 @@ func dial(addr string, requirements string) (*rpc.Client, os.Error) {
 	case "reliable":
 		log.Stdout("tcp")
 		return jsonrpc.Dial("tcp", addr)
+	case "secure":
+		log.Stdout("tls")
+		conn, err := net.Dial("tcp", "", addr)
+		if err != nil {
+			return nil, err
+		}
+		config := &tls.Config{ Rand: rand.Reader, Time: time.Nanoseconds}
+		ca := tls.NewCASet()
+		ca.SetFromPEM([]byte("ca.crt"))
+		tlsconn := tls.Client(conn, config)
+
+		return jsonrpc.NewClient(tlsconn), nil
 	default:
 		log.Stdout("udp")
 		return jsonrpc.Dial("udp", addr)
@@ -29,7 +45,7 @@ func dial(addr string, requirements string) (*rpc.Client, os.Error) {
 }
 
 func main() {
-	client, err := dial(":1234", "reliable")
+	client, err := dial(":1235", "secure")
 	if err != nil {
 		log.Exit("dialing:", err)
 	}
