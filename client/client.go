@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"rpc"
 	"rpc/jsonrpc"
 )
 
@@ -14,12 +16,23 @@ type Quotient struct {
 	Quo, Rem int
 }
 
+func dial(addr string, requirements string) (*rpc.Client, os.Error) {
+	switch requirements {
+	case "reliable":
+		log.Stdout("tcp")
+		return jsonrpc.Dial("tcp", addr)
+	default:
+		log.Stdout("udp")
+		return jsonrpc.Dial("udp", addr)
+	}
+	return nil, os.EINVAL
+}
+
 func main() {
-	client, err := jsonrpc.Dial("udp", ":1234")
+	client, err := dial(":1234", "reliable")
 	if err != nil {
 		log.Exit("dialing:", err)
 	}
-	log.Stdout("Connected")
 
 	// Synchronous call
 	args := &Args{7,8}
