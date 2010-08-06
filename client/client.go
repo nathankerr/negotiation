@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"rpc/jsonrpc"
 	"log"
 	"net"
 	"os"
 	"crypto/rand"
 	"rpc"
-	"rpc/jsonrpc"
 	"time"
 	"crypto/tls"
 )
@@ -25,7 +25,7 @@ func dialTLS(addr string) (*rpc.Client, os.Error) {
 	if err != nil {
 		return nil, err
 	}
-	config := &tls.Config{ Rand: rand.Reader, Time: time.Nanoseconds}
+	config := &tls.Config{Rand: rand.Reader, Time: time.Nanoseconds}
 	ca := tls.NewCASet()
 	ca.SetFromPEM([]byte("ca.crt"))
 	tlsconn := tls.Client(conn, config)
@@ -55,7 +55,7 @@ func main() {
 	}
 
 	// Synchronous call
-	args := &Args{7,8}
+	args := &Args{7, 8}
 	var reply int
 	for i := 0; i < 10; i++ {
 		args.A = i

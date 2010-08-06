@@ -36,11 +36,11 @@ func (t *Arith) Divide(args *Args, quo *Quotient) os.Error {
 }
 
 type PacketListener struct {
-	c net.PacketConn
+	c    net.PacketConn
 	addr net.Addr
 }
 
-func (pl *PacketListener)  Read(b []byte) (n int, err os.Error) {
+func (pl *PacketListener) Read(b []byte) (n int, err os.Error) {
 	n, pl.addr, err = pl.c.ReadFrom(b)
 	return n, err
 }
@@ -62,7 +62,7 @@ func serveTCP(proto string, addr string) os.Error {
 		log.Exit(err)
 	}
 	defer l.Close()
-		for {
+	for {
 		conn, _ := l.Accept()
 		jsonrpc.ServeConn(conn)
 	}
@@ -94,7 +94,7 @@ func serveTLS(proto string, addr string) os.Error {
 	if proto != "tls" {
 		return os.EINVAL
 	}
-	config := &tls.Config {
+	config := &tls.Config{
 		Rand: rand.Reader,
 		Time: time.Nanoseconds,
 	}
