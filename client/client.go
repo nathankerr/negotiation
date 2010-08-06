@@ -3,8 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
-	"rpc"
+	"rpc/jsonrpc"
 )
 
 type Args struct {
@@ -15,15 +14,12 @@ type Quotient struct {
 	Quo, Rem int
 }
 
-func Dial(addr string, requirements string) (*rpc.Client, os.Error) {
-	return rpc.DialHTTP("tcp", addr)
-}
-
 func main() {
-	client, err := rpc.DialHTTP("tcp", ":1234")
+	client, err := jsonrpc.Dial("udp", ":1234")
 	if err != nil {
 		log.Exit("dialing:", err)
 	}
+	log.Stdout("Connected")
 
 	// Synchronous call
 	args := &Args{7,8}

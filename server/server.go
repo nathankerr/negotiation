@@ -1,8 +1,8 @@
 package main
 
 import (
+	"rpc/jsonrpc"
 	"log"
-	"http"
 	"net"
 	"os"
 	"rpc"
@@ -32,64 +32,55 @@ func (t *Arith) Divide(args *Args, quo *Quotient) os.Error {
 	return nil
 }
 
-type UDPListener struct {
-	c net.Conn
+type PacketListener struct {
+	c net.PacketConn
+	addr net.Addr
 }
 
-func (l *UDPListener) Accept() (c net.Conn, err os.Error) {
-	if l == nil || l.c == nil {
-		return nil, os.EINVAL
-	}
-	return l.c, nil
+func (pl *PacketListener)  Read(b []byte) (n int, err os.Error) {
+	n, pl.addr, err = pl.c.ReadFrom(b)
+	return n, err
 }
 
-func (l *UDPListener) Close() os.Error {
-	return l.c.Close()
+func (pl *PacketListener) Write(b []byte) (n int, err os.Error) {
+	return pl.c.WriteTo(b, pl.addr)
 }
 
-func (l *UDPListener) Addr() net.Addr {
-	return l.c.LocalAddr()
-}
-
-func ListenUDP(proto string, laddr string) (l *UDPListener, err os.Error) {
-	l = new(UDPListener)
-	var la *net.UDPAddr
-	if laddr != "" {
-		if la, err = net.ResolveUDPAddr(laddr); err != nil {
-			return nil, err
-		}
-	}
-	c, err := net.ListenUDP(proto, la)
-	if err != nil {
-		return nil, err
-	}
-	l.c = c
-	return l, nil
+func (pl *PacketListener) Close() os.Error {
+	return pl.c.Close()
 }
 
 func serve(proto string, addr string) {
-	var l net.Listener
-	var e os.Error
-
 	switch proto {
 	case "tcp":
-		l, e = net.Listen(proto, addr)
+		l, err := net.Listen(proto, addr)
+		if err != nil {
+			log.Exit(err)
+		}
+		for {
+			conn, _ := l.Accept()
+			jsonrpc.ServeConn(conn)
+		}
 	case "udp":
-		l, e = ListenUDP(proto, addr)
+		pl := new(PacketListener)
+		c, err := net.ListenPacket(proto, addr)
+		if err != nil {
+			log.Exit(err)
+		}
+		pl.c = c
+		for {
+			jsonrpc.ServeConn(pl)
+		}
 	default:
 		log.Exit("Protocol", proto, "not supported")
 	}
-	if e != nil {
-		log.Exit("listen error:", e)
-	}
-	http.Serve(l, nil)
+
 }
 
 func main() {
 	log.Stdout("Starting Server")
 	arith := new(Arith)
 	rpc.Register(arith)
-	rpc.HandleHTTP()
 
 	addr := ":1234"
 	serve("udp", addr)
