@@ -83,5 +83,6 @@ func main() {
 	rpc.Register(arith)
 
 	addr := ":1234"
-	serve("udp", addr)
+	go serve("udp", addr)
+	serve("tcp", addr)
 }
