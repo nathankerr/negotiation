@@ -32,14 +32,32 @@ func (t *Arith) Divide(args *Args, quo *Quotient) os.Error {
 	return nil
 }
 
+func serve(proto string, addr string) {
+	var l net.Listener
+	var e os.Error
+
+	switch proto {
+	case "tcp":
+		l, e = net.Listen(proto, addr)
+	/*case "udp":
+		l, e := net.ListenUDP(proto, addr)
+		listener = net.Listener(l)*/
+	default:
+		log.Exit("Protocol ", proto, " not supported")
+	}
+	if e != nil {
+		log.Exit("listen error:", e)
+	}
+	http.Serve(l, nil)
+}
+
 func main() {
 
 	arith := new(Arith)
 	rpc.Register(arith)
 	rpc.HandleHTTP()
-	l, e := net.Listen("tcp", ":1234")
-	if e != nil {
-		log.Exit("listen error:", e)
-	}
-	http.Serve(l, nil)
+
+	addr := ":1234"
+	go serve("tcp", addr)
+	serve("udp", addr)
 }
