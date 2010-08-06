@@ -1,6 +1,7 @@
 package main
 
 import (
+	"http"
 	"rpc/jsonrpc"
 	"log"
 	"net"
@@ -53,11 +54,9 @@ func (pl *PacketListener) Close() os.Error {
 	return pl.c.Close()
 }
 
-func serveTCP(proto string, addr string) os.Error {
-	if proto != "tcp" {
-		return os.EINVAL
-	}
-	l, err := net.Listen(proto, addr)
+// rpc over tcp
+func serveTCP(addr string) {
+	l, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Exit(err)
 	}
@@ -66,17 +65,12 @@ func serveTCP(proto string, addr string) os.Error {
 		conn, _ := l.Accept()
 		jsonrpc.ServeConn(conn)
 	}
-
-	return nil
 }
 
-func serveUDP(proto string, addr string) os.Error {
-	if proto != "udp" {
-		return os.EINVAL
-	}
-
+// rpc over udp
+func serveUDP(addr string) {
 	pl := new(PacketListener)
-	c, err := net.ListenPacket(proto, addr)
+	c, err := net.ListenPacket("udp", addr)
 	if err != nil {
 		log.Exit(err)
 	}
@@ -86,14 +80,10 @@ func serveUDP(proto string, addr string) os.Error {
 	for {
 		jsonrpc.ServeConn(pl)
 	}
-
-	return nil
 }
 
-func serveTLS(proto string, addr string) os.Error {
-	if proto != "tls" {
-		return os.EINVAL
-	}
+// rpc over tls over tcp
+func serveTLS(addr string) {
 	config := &tls.Config{
 		Rand: rand.Reader,
 		Time: time.Nanoseconds,
@@ -113,22 +103,17 @@ func serveTLS(proto string, addr string) os.Error {
 		conn, _ := l.Accept()
 		jsonrpc.ServeConn(conn)
 	}
-
-	return nil
 }
 
-func serve(proto string, addr string) {
-	switch proto {
-	case "tcp":
-		serveTCP(proto, addr)
-	case "udp":
-		serveUDP(proto, addr)
-	case "tls":
-		serveTLS(proto, addr)
-	default:
-		log.Exit("Protocol", proto, "not supported")
-	}
+// rpc over HTTP
+func serveHTTP(addr string) {
+	rpc.HandleHTTP()
 
+	l, err := net.Listen("tcp", addr)
+	if err != nil {
+		log.Exit(err)
+	}
+	http.Serve(l, nil)
 }
 
 func main() {
@@ -136,8 +121,8 @@ func main() {
 	arith := new(Arith)
 	rpc.Register(arith)
 
-	addr := ":1234"
-	go serve("udp", addr)
-	go serve("tcp", addr)
-	serve("tls", addr)
+	go serveUDP(":1234")
+	go serveTCP(":1234")
+	go serveTLS(":1235")
+	serveHTTP(":1236")
 }
