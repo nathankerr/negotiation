@@ -10,5 +10,5 @@ To compile:
 
 To compile:
 
-   8g server.go server-model.go arith.go
-   8l -o server server.8
+    8g server.go server-model.go arith.go
+    8l -o server server.8
