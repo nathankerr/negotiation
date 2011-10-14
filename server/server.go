@@ -12,30 +12,7 @@ import (
 	"time"
 )
 
-type Args struct {
-	A, B int
-}
-
-type Quotient struct {
-	Quo, Rem int
-}
-
-type Arith int
-
-func (t *Arith) Multiply(args *Args, reply *int) os.Error {
-	*reply = args.A * args.B
-	return nil
-}
-
-func (t *Arith) Divide(args *Args, quo *Quotient) os.Error {
-	if args.B == 0 {
-		return os.ErrorString("divide by zero")
-	}
-	quo.Quo = args.A / args.B
-	quo.Rem = args.A % args.B
-	return nil
-}
-
+// Support for running rpc over udp
 type PacketListener struct {
 	c    net.PacketConn
 	addr net.Addr
@@ -58,7 +35,7 @@ func (pl *PacketListener) Close() os.Error {
 func serveTCP(addr string) {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		log.Exit(err)
+		log.Fatal(err)
 	}
 	defer l.Close()
 	for {
@@ -72,7 +49,7 @@ func serveUDP(addr string) {
 	pl := new(PacketListener)
 	c, err := net.ListenPacket("udp", addr)
 	if err != nil {
-		log.Exit(err)
+		log.Fatal(err)
 	}
 	defer pl.Close()
 	pl.c = c
@@ -92,12 +69,12 @@ func serveTLS(addr string) {
 	var err os.Error
 	config.Certificates[0], err = tls.LoadX509KeyPair("server.crt", "server.key")
 	if err != nil {
-		log.Exit(err)
+		log.Fatal(err)
 	}
 
 	l, err := tls.Listen("tcp", ":1235", config)
 	if err != nil {
-		log.Exit(err)
+		log.Fatal(err)
 	}
 	for {
 		conn, _ := l.Accept()
@@ -111,15 +88,18 @@ func serveHTTP(addr string) {
 
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		log.Exit(err)
+		log.Fatal(err)
 	}
 	http.Serve(l, nil)
 }
 
 func main() {
-	log.Stdout("Starting Server")
+	log.Println("Starting Server")
+
 	arith := new(Arith)
 	rpc.Register(arith)
+
+	rpc.Register(&Server{})
 
 	go serveUDP(":1234")
 	go serveTCP(":1234")

@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"rpc/jsonrpc"
 	"log"
-	"net"
+//	"net"
 	"os"
-	"crypto/rand"
+//	"crypto/rand"
 	"rpc"
-	"time"
-	"crypto/tls"
+//	"time"
+//	"crypto/tls"
 )
 
 type Args struct {
@@ -20,38 +20,38 @@ type Quotient struct {
 	Quo, Rem int
 }
 
-func dialTLS(addr string) (*rpc.Client, os.Error) {
-	conn, err := net.Dial("tcp", "", addr)
-	if err != nil {
-		return nil, err
-	}
-	config := &tls.Config{Rand: rand.Reader, Time: time.Nanoseconds}
-	ca := tls.NewCASet()
-	ca.SetFromPEM([]byte("ca.crt"))
-	tlsconn := tls.Client(conn, config)
-
-	return jsonrpc.NewClient(tlsconn), nil
-}
+//func dialTLS(addr string) (*rpc.Client, os.Error) {
+//	conn, err := net.Dial("tcp", addr)
+//	if err != nil {
+//		return nil, err
+//	}
+//	config := &tls.Config{Rand: rand.Reader, Time: time.Nanoseconds}
+//	ca := tls.NewCASet()
+//	ca.SetFromPEM([]byte("ca.crt"))
+//	tlsconn := tls.Client(conn, config)
+//
+//	return jsonrpc.NewClient(tlsconn), nil
+//}
 
 func dial(addr string, requirements string) (*rpc.Client, os.Error) {
 	switch requirements {
 	case "reliable":
-		log.Stdout("tcp")
+		log.Println("tcp")
 		return jsonrpc.Dial("tcp", addr)
-	case "secure":
-		log.Stdout("tls")
-		return dialTLS(addr)
+//	case "secure":
+//		log.Println("tls")
+//		return dialTLS(addr)
 	default:
-		log.Stdout("udp")
+		log.Println("udp")
 		return jsonrpc.Dial("udp", addr)
 	}
 	return nil, os.EINVAL
 }
 
 func main() {
-	client, err := dial(":1235", "secure")
+	client, err := dial(":1234", "")
 	if err != nil {
-		log.Exit("dialing:", err)
+		log.Fatal("dialing:", err)
 	}
 
 	// Synchronous call
@@ -61,7 +61,7 @@ func main() {
 		args.A = i
 		err = client.Call("Arith.Multiply", args, &reply)
 		if err != nil {
-			log.Exit("arith error:", err)
+			log.Fatal("arith error:", err)
 		}
 		fmt.Printf("Arith: %d*%d=%d\n", args.A, args.B, reply)
 	}
